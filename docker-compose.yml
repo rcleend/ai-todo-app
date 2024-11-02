@@ -1,40 +1,14 @@
-version: '3.8'
+version: '3.1'
+
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - '3000:3000'
+  mongodb:
+    build: .
+    restart: always
     environment:
-      NODE_ENV: production
-      NEXT_PUBLIC_API_BASE_URL: http://backend:8080
-    depends_on:
-      - backend
-
-  backend:
-    build: ./backend
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_DATABASE=todoapp
+      - MONGO_REPLICA_HOST=localhost
+      - MONGO_REPLICA_PORT=27017
     ports:
-      - '8080:8080'
-    environment:
-      DATABASE_URL: mongodb://db:27017/todoapp?replicaSet=rs0&directConnection=true
-    depends_on:
-      - mongo-init
-
-  db:
-    image: mongo:latest
-    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
-    ports:
-      - '27017:27017'
-    volumes:
-      - db_data:/data/db
-
-  mongo-init:
-    image: mongo:latest
-    depends_on:
-      - db
-    command: >
-      mongosh --host db:27017 --eval '
-        rs.initiate();
-      '
-
-volumes:
-  db_data:
+      - "27017:27017"

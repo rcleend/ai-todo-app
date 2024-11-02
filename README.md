@@ -28,3 +28,8 @@ A simple Interactive To-Do List Application where users can add, remove, and mar
 ## Setup Instructions
 
 ### 1. Clone the Repository 
+
+<!-- Install docker if not installed -->
+<!-- Run docker compose up --build -d -->
+<!-- Run prisma generate -->
+<!-- Start Dev server  -->

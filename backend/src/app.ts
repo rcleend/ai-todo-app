@@ -2,11 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
 import * as dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
+import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
 
 const app = express();
+export const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(express.json());
@@ -14,15 +15,12 @@ app.use(express.json());
 // API routes
 app.use('/api', routes);
 
-// MongoDB connection
-const uri = process.env.MONGODB_URI || 'mongodb://db:27017/todoapp';
-export const client = new MongoClient(uri, {});
-
-client.connect()
+// Test database connection
+prisma.$connect()
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB via Prisma');
   })
-  .catch((err) => {
+  .catch((err: unknown) => {
     console.error('Failed to connect to MongoDB:', err);
   });
 
