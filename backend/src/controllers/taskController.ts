@@ -1,39 +1,53 @@
 import { Request, Response } from 'express';
-import { Task } from '../models/taskModel.js';
+import * as taskModel from '../models/taskModel.js';
 
-export const createTask = async (req: Request, res: Response) => {
+// Create a new task
+export const addTask = async (req: Request, res: Response) => {
+  console.log(req.body);
   try {
-    const task = new Task(req.body);
-    const savedTask = await task.save();
-    res.json(savedTask);
+    const taskData = req.body;
+    const newTask = await taskModel.createTask(taskData);
+    res.status(201).json(newTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create task.' });
+    console.log(error);
+    res.status(500).json({ error: 'Failed to create task' });
   }
 };
 
-export const getTasks = async (_req: Request, res: Response) => {
+// Get a task by ID
+export const getTasks = async (req: Request, res: Response) => {
   try {
-    const tasks = await Task.find().sort({ created_at: -1 });
-    res.json(tasks);
+    const tasks = await taskModel.getTasks();
+
+    if (tasks) {
+      res.json(tasks);
+    } else {
+      res.status(404).json({ error: 'Task not found' });
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch tasks.' });
+    res.status(500).json({ error: 'Failed to retrieve task' });
   }
 };
 
+// Update a task
 export const updateTask = async (req: Request, res: Response) => {
   try {
-    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const id = req.params.id;
+    const taskData = req.body;
+    const updatedTask = await taskModel.updateTask(id, taskData);
     res.json(updatedTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update task.' });
+    res.status(500).json({ error: 'Failed to update task' });
   }
 };
 
+// Delete a task
 export const deleteTask = async (req: Request, res: Response) => {
   try {
-    await Task.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Task deleted successfully.' });
+    const id = req.params.id;
+    const deletedTask = await taskModel.deleteTask(id);
+    res.json(deletedTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete task.' });
+    res.status(500).json({ error: 'Failed to delete task' });
   }
 }; 

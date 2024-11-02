@@ -71,3 +71,7 @@ yarn-error.log*
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Next.js build
+.next/
+**/.next/

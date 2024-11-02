@@ -1,23 +1,30 @@
-# Use an official Node.js image as the base image
-FROM node:18-alpine
+# Install dependencies only when needed
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install 
 
-# Set the working directory inside the container
+# Rebuild the source code only when needed
+FROM node:18-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm run build
+
+# Production image
+FROM node:18-alpine AS runner
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+ENV NODE_ENV=production
 
-# Install frontend dependencies
-RUN npm install
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
-# Copy the rest of the frontend code
-COPY . .
-
-# Build the frontend application
-RUN npm run build
-
-# Expose port 3000 (or your frontend app's port)
 EXPOSE 3000
-
-# Start the frontend application
-CMD ["npm", "start"] 
+CMD ["pnpm", "start"] 

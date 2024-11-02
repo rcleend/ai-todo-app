@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  createTask,
+  addTask,
   getTasks,
   updateTask,
   deleteTask
@@ -10,7 +10,7 @@ import { getSuggestions } from '../controllers/aiController.js';
 const router = express.Router();
 
 // Task routes
-router.post('/tasks', createTask);
+router.post('/tasks', addTask);
 router.get('/tasks', getTasks);
 router.put('/tasks/:id', updateTask);
 router.delete('/tasks/:id', deleteTask);

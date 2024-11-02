@@ -1,41 +1,40 @@
-version: '3'
+version: '3.8'
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     ports:
       - '3000:3000'
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: http://backend:8080
     depends_on:
       - backend
-    volumes:
-      - ./frontend:/app
-    command: ["npm", "start"]
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
-      - '5000:5000'
+      - '8080:8080'
+    environment:
+      DATABASE_URL: mongodb://db:27017/todoapp?replicaSet=rs0&directConnection=true
     depends_on:
-      - db
-    volumes:
-      - ./backend:/app
-    command: ["npm", "start"]
+      - mongo-init
 
   db:
-    image: mariadb
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: todoapp
-      MYSQL_USER: todouser
-      MYSQL_PASSWORD: todopassword
+    image: mongo:latest
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     ports:
-      - '3306:3306'
+      - '27017:27017'
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/data/db
+
+  mongo-init:
+    image: mongo:latest
+    depends_on:
+      - db
+    command: >
+      mongosh --host db:27017 --eval '
+        rs.initiate();
+      '
 
 volumes:
-  db_data: 
+  db_data:

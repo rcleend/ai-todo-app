@@ -1,16 +1,31 @@
 import * as request from 'supertest';
 import app from '../src/app';
-import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoClient } from 'mongodb';
 
 describe('Task API', () => {
+  let mongoServer: MongoMemoryServer;
+  let client: MongoClient;
+
   beforeAll(async () => {
-    // Connect to the in-memory database or test database
-    await mongoose.connect('mongodb://localhost:27017/todoapp-test');
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+
+    // Override the client in app.ts
+    client = new MongoClient(uri);
+    await client.connect();
+    app.locals.client = client; // Assuming you modify app.ts to accept client from locals
+
+    console.log('Test database connected');
   });
 
   afterAll(async () => {
-    // Close the database connection after all tests
-    await mongoose.connection.close();
+    if (client) {
+      await client.close();
+    }
+    if (mongoServer) {
+      await mongoServer.stop();
+    }
   });
 
   let taskId: string;

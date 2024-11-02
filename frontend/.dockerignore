@@ -1,4 +1,7 @@
 node_modules
 npm-debug.log
 Dockerfile
-.dockerignore 
+.dockerignore
+.next
+.pnpm-store
+pnpm-debug.log 
