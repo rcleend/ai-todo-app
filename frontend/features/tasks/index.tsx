@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTasks } from './hooks/useTasks';
-import TaskList from './components/TaskList';
-import { Task } from '@/app/lib/types';
+import React from "react";
+import { useTasks } from "./hooks/useTasks";
+import TaskList from "./components/TaskList";
+import { Task } from "@/lib/types";
 
 export default function Tasks({ initialTasks }: { initialTasks: Task[] }) {
   const {
@@ -21,7 +21,7 @@ export default function Tasks({ initialTasks }: { initialTasks: Task[] }) {
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Todo List</h1>
-      
+
       <form onSubmit={handleSubmit} className="mb-4">
         <input
           type="text"
@@ -45,11 +45,7 @@ export default function Tasks({ initialTasks }: { initialTasks: Task[] }) {
         </button>
       </form>
 
-      <TaskList
-        tasks={tasks}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
-      />
+      <TaskList tasks={tasks} onUpdate={handleUpdate} onDelete={handleDelete} />
     </main>
   );
 }

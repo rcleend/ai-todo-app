@@ -1,17 +1,22 @@
-import React from 'react';
-import Providers from './providers';
+import Providers from "@/lib/providers";
+import "./globals.css";
+import React from "react";
 
 export const metadata = {
-  title: 'Interactive To-Do List',
-  description: 'A simple interactive to-do list application.',
+  title: "Interactive To-Do List",
+  description: "A simple interactive to-do list application.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-gray-50">
         <Providers>{children}</Providers>
       </body>
     </html>
   );
-} 
+}
