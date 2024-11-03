@@ -5,11 +5,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { API_BASE_URL } from "@/lib/config";
 import { Task } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
 
 export function useTasks(initialTasks: Task[]) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Fetch tasks
   const { data: tasks = initialTasks, isLoading } = useQuery<Task[]>({
@@ -76,8 +78,12 @@ export function useTasks(initialTasks: Task[]) {
     updateTaskMutation.mutate({ id, updates });
   };
 
-  const handleDelete = (id: string) => {
+  const onDeleteTask = (id: string) => {
     deleteTaskMutation.mutate(id);
+    toast({
+      title: "Task deleted",
+      description: "The task has been successfully deleted.",
+    });
   };
 
   return {
@@ -89,7 +95,7 @@ export function useTasks(initialTasks: Task[]) {
     setDescription,
     handleSubmit,
     handleUpdate,
-    handleDelete,
+    onDeleteTask,
     isSubmitting: addTaskMutation.isLoading,
   };
 }
