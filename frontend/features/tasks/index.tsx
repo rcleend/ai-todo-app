@@ -2,10 +2,17 @@
 
 import React from "react";
 import { useTasks } from "./hooks/useTasks";
-import TaskList from "./components/TaskList";
 import { Task } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Tasks({ initialTasks }: { initialTasks: Task[] }) {
+  const { toast } = useToast();
   const {
     title,
     setTitle,
@@ -18,34 +25,102 @@ export default function Tasks({ initialTasks }: { initialTasks: Task[] }) {
     handleDelete,
   } = useTasks(initialTasks);
 
+  const onDeleteTask = (id: string) => {
+    handleDelete(id);
+    toast({
+      title: "Task deleted",
+      description: "The task has been successfully deleted.",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container flex items-center justify-center min-h-[calc(100vh-4rem)] mx-auto">
+        <Card className="w-[600px]">
+          <CardHeader>
+            <Skeleton className="h-8 w-48" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Todo List</h1>
+    <div className="container flex items-center justify-center min-h-[calc(100vh-4rem)] mx-auto">
+      <Card className="w-[600px]">
+        <CardHeader>
+          <CardTitle>Task Manager</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex flex-col gap-4">
+              <Input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Task title"
+              />
+              <Input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Task description"
+              />
+              <Button type="submit">Add Task</Button>
+            </div>
+          </form>
 
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Task title"
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Task description"
-          className="border p-2 mr-2"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Add Task
-        </button>
-      </form>
-
-      <TaskList tasks={tasks} onUpdate={handleUpdate} onDelete={handleDelete} />
-    </main>
+          <div className="space-y-3">
+            {tasks.map((task) => (
+              <div
+                key={task.id}
+                className="flex items-start gap-3 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+              >
+                <Checkbox
+                  checked={task.completed}
+                  onCheckedChange={() =>
+                    handleUpdate(task.id, { completed: !task.completed })
+                  }
+                  className="mt-1"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className={`font-medium ${
+                      task.completed ? "line-through text-muted-foreground" : ""
+                    }`}
+                  >
+                    {task.title}
+                  </h3>
+                  {task.description && (
+                    <p
+                      className={`text-sm ${
+                        task.completed
+                          ? "line-through text-muted-foreground"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {task.description}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDeleteTask(task.id)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
