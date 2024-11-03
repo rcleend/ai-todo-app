@@ -6,6 +6,7 @@ import axios from "axios";
 import { API_BASE_URL } from "@/lib/config";
 import { Task } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { TaskFormValues } from "../schemas";
 
 export function useTasks(initialTasks: Task[]) {
   const [title, setTitle] = useState("");
@@ -63,17 +64,6 @@ export function useTasks(initialTasks: Task[]) {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-
-    addTaskMutation.mutate({
-      title,
-      description,
-      completed: false,
-    });
-  };
-
   const handleUpdate = (id: string, updates: Partial<Task>) => {
     updateTaskMutation.mutate({ id, updates });
   };
@@ -86,16 +76,20 @@ export function useTasks(initialTasks: Task[]) {
     });
   };
 
+  const onSubmit = (values: TaskFormValues, reset: () => void) => {
+    addTaskMutation.mutate({
+      title: values.title,
+      description: values.description || "",
+      completed: false,
+    });
+    reset();
+  };
+
   return {
-    title,
-    setTitle,
     tasks,
-    isLoading,
-    description,
-    setDescription,
-    handleSubmit,
     handleUpdate,
     onDeleteTask,
-    isSubmitting: addTaskMutation.isLoading,
+    addTaskMutation,
+    onSubmit,
   };
 }
