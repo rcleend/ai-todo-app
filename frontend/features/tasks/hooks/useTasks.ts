@@ -5,8 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { API_BASE_URL } from "@/lib/config";
 import { Task } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast";
 import { TaskFormValues } from "../schemas";
+import { useToast } from "@/hooks/useToast";
 
 export function useTasks(initialTasks: Task[]) {
   const [title, setTitle] = useState("");

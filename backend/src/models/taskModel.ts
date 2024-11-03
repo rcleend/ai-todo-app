@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import { Task } from '../interfaces/task.js';
+import { PrismaClient } from "@prisma/client";
+import { Task } from "../interfaces/task.js";
 
 const prisma = new PrismaClient();
 
 // Create a new task
-export const createTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
+export const createTask = async (taskData: Omit<Task, "id">): Promise<Task> => {
   const newTask = await prisma.task.create({
     data: taskData,
   });
@@ -13,7 +13,12 @@ export const createTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
 
 // Get all tasks
 export const getTasks = async (): Promise<Task[]> => {
-  const tasks = await prisma.task.findMany();
+  // Retrieve tasks ordered by creation date since the most recent task is at the top
+  const tasks = await prisma.task.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+  });
   return tasks;
 };
 
@@ -26,7 +31,10 @@ export const getTaskById = async (id: string): Promise<Task | null> => {
 };
 
 // Update a task
-export const updateTask = async (id: string, taskData: Partial<Task>): Promise<Task> => {
+export const updateTask = async (
+  id: string,
+  taskData: Partial<Task>
+): Promise<Task> => {
   const updatedTask = await prisma.task.update({
     where: { id },
     data: taskData,
@@ -40,4 +48,4 @@ export const deleteTask = async (id: string): Promise<Task> => {
     where: { id },
   });
   return deletedTask;
-}; 
+};

@@ -6,22 +6,53 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTasks } from "./hooks/useTasks";
 import { TaskForm } from "./components/TaskForm";
 import { TaskItem } from "./components/TaskItem";
+import { EmptyTasks } from "./components/EmptyTasks";
 
 interface TasksProps {
   initialTasks: Task[];
 }
 
 const taskAnimationProps = {
-  initial: { opacity: 0, height: 0 },
+  initial: {
+    opacity: 0,
+    height: 0,
+    scale: 0.8,
+  },
   animate: {
     opacity: 1,
     height: "auto",
-    transition: { duration: 0.2 },
+    scale: 1,
+    transition: {
+      height: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+      opacity: {
+        duration: 0.2,
+        delay: 0.2,
+      },
+      scale: {
+        duration: 0.2,
+        delay: 0.2,
+      },
+    },
   },
   exit: {
     opacity: 0,
     height: 0,
-    transition: { duration: 0.2 },
+    scale: 0.8,
+    transition: {
+      height: {
+        duration: 0.2,
+        delay: 0.1,
+      },
+      opacity: {
+        duration: 0.1,
+      },
+      scale: {
+        duration: 0.1,
+      },
+    },
   },
 };
 
@@ -34,21 +65,25 @@ export default function Tasks({ initialTasks }: TasksProps) {
       <TaskForm onSubmit={onSubmit} />
 
       <div className="w-full max-w-[600px]">
-        <AnimatePresence initial={false}>
-          {tasks.map((task) => (
-            <motion.div
-              key={task.id}
-              layout
-              {...taskAnimationProps}
-              className="mb-3"
-            >
-              <TaskItem
-                task={task}
-                onUpdate={handleUpdate}
-                onDelete={onDeleteTask}
-              />
-            </motion.div>
-          ))}
+        <AnimatePresence mode="popLayout" initial={false}>
+          {tasks.length > 0 ? (
+            tasks.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                {...taskAnimationProps}
+                className="mb-3"
+              >
+                <TaskItem
+                  task={task}
+                  onUpdate={handleUpdate}
+                  onDelete={onDeleteTask}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <EmptyTasks />
+          )}
         </AnimatePresence>
       </div>
     </div>
