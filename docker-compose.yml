@@ -13,28 +13,28 @@ services:
     ports:
       - "27017:27017"
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=mongodb://root:example@mongodb:27017/todoapp?authSource=admin&directConnection=true
-      - PORT=8080
-    depends_on:
-      - mongodb
-    restart: always
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - DATABASE_URL=mongodb://root:example@mongodb:27017/todoapp?authSource=admin&directConnection=true
+  #     - PORT=8080
+  #   depends_on:
+  #     - mongodb
+  #   restart: always
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
-    depends_on:
-      - backend
-    restart: always
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+  #   depends_on:
+  #     - backend
+  #   restart: always
   

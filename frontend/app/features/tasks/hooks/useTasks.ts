@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Task } from '../lib/types';
+import { API_BASE_URL } from '@/app/lib/config';
+import { Task } from '@/app/lib/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
-
-export function useTodo() {
+export function useTasks(initialTasks: Task[]) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const queryClient = useQueryClient();
 
   // Fetch tasks
-  const { data: tasks = [], isLoading } = useQuery<Task[]>({
+  const { data: tasks = initialTasks, isLoading } = useQuery<Task[]>({
     queryKey: ['tasks'],
     queryFn: async () => {
       const response = await axios.get(`${API_BASE_URL}/tasks`);
@@ -76,10 +75,10 @@ export function useTodo() {
   return {
     title,
     setTitle,
-    description,
-    setDescription,
     tasks,
     isLoading,
+    description,
+    setDescription,
     handleSubmit,
     handleUpdate,
     handleDelete,

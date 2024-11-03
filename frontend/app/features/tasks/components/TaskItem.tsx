@@ -1,5 +1,5 @@
+import { Task } from '@/app/lib/types';
 import React from 'react';
-import { Task } from '../lib/types';
 
 interface TaskItemProps {
   task: Task;
