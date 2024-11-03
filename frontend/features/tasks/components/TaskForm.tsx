@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { taskFormSchema, TaskFormValues } from "@/features/tasks/schemas";
+import { useSuggest } from "../hooks/useSuggest";
+import { TaskSuggestions } from "./TaskSuggestions";
 import {
   Form,
   FormControl,
@@ -13,12 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Task } from "@/lib/types";
 
 interface TaskFormProps {
   onSubmit: (values: TaskFormValues, reset: () => void) => void;
+  tasks: Task[];
 }
 
-export function TaskForm({ onSubmit }: TaskFormProps) {
+export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
@@ -26,6 +31,27 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
       description: "",
     },
   });
+
+  const { suggestions, getSuggestions, isLoading } = useSuggest();
+  const debouncedGetSuggestions = useDebounce(getSuggestions, 500);
+
+  // TODO: move to seperate component
+  const handleTitleChange = (value: string) => {
+    if (value.length >= 3) {
+      const tasksForSuggestions = [
+        { title: value, description: "" },
+        ...tasks.slice(0, 5),
+      ];
+      debouncedGetSuggestions(tasks);
+    }
+  };
+
+  const handleSelectSuggestion = (suggestion: Task) => {
+    form.setValue("title", suggestion.title);
+    if (suggestion.description) {
+      form.setValue("description", suggestion.description);
+    }
+  };
 
   const handleSubmit = (values: TaskFormValues) => {
     onSubmit(values, form.reset);
@@ -49,11 +75,23 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
                 render={({ field }) => (
                   <FormItem className="min-h-[70px]">
                     <FormControl>
-                      <Input placeholder="Task title" {...field} />
+                      <Input
+                        placeholder="Task title"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleTitleChange(e.target.value);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+              <TaskSuggestions
+                suggestions={suggestions}
+                isLoading={isLoading}
+                onSelectSuggestion={handleSelectSuggestion}
               />
               <FormField
                 control={form.control}

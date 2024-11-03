@@ -62,7 +62,7 @@ export default function Tasks({ initialTasks }: TasksProps) {
 
   return (
     <div className="container flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] mx-auto py-8 space-y-8 px-4 sm:px-6 lg:px-8">
-      <TaskForm onSubmit={onSubmit} />
+      <TaskForm onSubmit={onSubmit} tasks={tasks} />
 
       <div className="w-full max-w-[600px]">
         <AnimatePresence mode="popLayout" initial={false}>
