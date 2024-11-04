@@ -79,6 +79,9 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                           handleTitleChange();
                           setShowSuggestions(true);
                         }}
+                        onBlur={() => {
+                          setShowSuggestions(false);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
