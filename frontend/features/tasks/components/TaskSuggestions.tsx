@@ -38,6 +38,10 @@ export function TaskSuggestions({
     };
   }, [onClose]);
 
+  if (suggestions.length === 0) {
+    return null;
+  }
+
   return (
     <AnimatePresence>
       {show && (
@@ -47,7 +51,7 @@ export function TaskSuggestions({
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
           ref={suggestionsRef}
-          className="absolute z-50 w-full mt-1 pb-4 bg-popover border-2 rounded-md shadow-md [background:linear-gradient(45deg,#172033,theme(colors.slate.800)_50%,#172033)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.600/.48)_80%,_theme(colors.indigo.500)_86%,_theme(colors.indigo.300)_90%,_theme(colors.indigo.500)_94%,_theme(colors.slate.600/.48))_border-box] border-transparent animate-border"
+          className="absolute z-50 w-full mt-1 pb-2 bg-popover border-2 rounded-md shadow-md [background:linear-gradient(45deg,#172033,theme(colors.slate.800)_50%,#172033)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.600/.48)_80%,_theme(colors.indigo.500)_86%,_theme(colors.indigo.300)_90%,_theme(colors.indigo.500)_94%,_theme(colors.slate.600/.48))_border-box] border-transparent animate-border"
         >
           <div className="flex items-center gap-1 px-4 py-2 border-b border-border/50">
             <Sparkles className="w-3 h-3 text-indigo-400" />

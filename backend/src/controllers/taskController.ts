@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import * as taskModel from '../models/taskModel.js';
+import { Request, Response } from "express";
+import * as taskModel from "../models/taskModel.js";
 
 // Create a new task
 export const addTask = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const addTask = async (req: Request, res: Response) => {
     res.status(201).json(newTask);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Failed to create task' });
+    res.status(500).json({ error: "Failed to create task" });
   }
 };
 
@@ -22,10 +22,10 @@ export const getTasks = async (req: Request, res: Response) => {
     if (tasks) {
       res.json(tasks);
     } else {
-      res.status(404).json({ error: 'Task not found' });
+      res.status(404).json({ error: "Task not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve task' });
+    res.status(500).json({ error: "Failed to retrieve task" });
   }
 };
 
@@ -37,7 +37,7 @@ export const updateTask = async (req: Request, res: Response) => {
     const updatedTask = await taskModel.updateTask(id, taskData);
     res.json(updatedTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update task' });
+    res.status(500).json({ error: "Failed to update task" });
   }
 };
 
@@ -48,6 +48,6 @@ export const deleteTask = async (req: Request, res: Response) => {
     const deletedTask = await taskModel.deleteTask(id);
     res.json(deletedTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete task' });
+    res.status(500).json({ error: "Failed to delete task" });
   }
-}; 
+};

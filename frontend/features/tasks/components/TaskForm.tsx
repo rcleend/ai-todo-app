@@ -31,22 +31,20 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
     },
   });
 
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
-  const { suggestions, handleTitleChange, isLoading } = useSuggest(tasks);
+  const {
+    suggestions,
+    showSuggestions,
+    isClosing,
+    handleTitleChange,
+    handleCloseSuggestions,
+    handleShowSuggestions,
+    isLoading,
+  } = useSuggest(tasks);
 
   const handleSelectSuggestion = (suggestion: Task) => {
     form.setValue("title", suggestion.title);
     form.setValue("description", suggestion.description || "");
     handleCloseSuggestions();
-  };
-
-  const handleCloseSuggestions = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setShowSuggestions(false);
-      setIsClosing(false);
-    }, 200); // Match the animation duration
   };
 
   const handleSubmit = (values: TaskFormValues) => {
@@ -77,9 +75,9 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                         onChange={(e) => {
                           field.onChange(e);
                           handleTitleChange(e.target.value);
-                          setShowSuggestions(true);
+                          handleShowSuggestions();
                         }}
-                        onFocus={() => setShowSuggestions(true)}
+                        onFocus={handleShowSuggestions}
                       />
                     </FormControl>
                     <FormMessage />
