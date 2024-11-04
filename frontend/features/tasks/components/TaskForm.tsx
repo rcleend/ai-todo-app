@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useDebounce } from "@/hooks/useDebounce";
 import { Task } from "@/lib/types";
 
 interface TaskFormProps {
@@ -32,25 +31,11 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
     },
   });
 
-  const { suggestions, getSuggestions, isLoading } = useSuggest();
-  const debouncedGetSuggestions = useDebounce(getSuggestions, 500);
-
-  // TODO: move to seperate component
-  const handleTitleChange = (value: string) => {
-    if (value.length >= 3) {
-      const tasksForSuggestions = [
-        { title: value, description: "" },
-        ...tasks.slice(0, 5),
-      ];
-      debouncedGetSuggestions(tasks);
-    }
-  };
+  const { suggestions, handleTitleChange, isLoading } = useSuggest(tasks);
 
   const handleSelectSuggestion = (suggestion: Task) => {
     form.setValue("title", suggestion.title);
-    if (suggestion.description) {
-      form.setValue("description", suggestion.description);
-    }
+    form.setValue("description", suggestion.description || "");
   };
 
   const handleSubmit = (values: TaskFormValues) => {

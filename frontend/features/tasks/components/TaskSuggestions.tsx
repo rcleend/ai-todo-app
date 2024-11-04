@@ -15,32 +15,21 @@ export function TaskSuggestions({
   isLoading,
   onSelectSuggestion,
 }: TaskSuggestionsProps) {
-  if (isLoading) {
-    return (
-      <div className="space-y-2">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-      </div>
-    );
-  }
-
-  if (suggestions.length === 0) {
+  if (isLoading || suggestions.length === 0) {
     return null;
   }
 
   return (
     <div className="space-y-2">
       {suggestions.map((suggestion, index) => (
-        <Button
+        <a
           key={index}
-          variant="outline"
           className="w-full justify-between text-left font-normal"
           onClick={() => onSelectSuggestion(suggestion)}
         >
           <span className="truncate">{suggestion.title}</span>
           <Plus className="h-4 w-4 shrink-0" />
-        </Button>
+        </a>
       ))}
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { API_BASE_URL } from "@/lib/config";
@@ -9,8 +8,6 @@ import { TaskFormValues } from "../schemas";
 import { useToast } from "@/hooks/useToast";
 
 export function useTasks(initialTasks: Task[]) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -31,8 +28,6 @@ export function useTasks(initialTasks: Task[]) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      setTitle("");
-      setDescription("");
     },
   });
 
