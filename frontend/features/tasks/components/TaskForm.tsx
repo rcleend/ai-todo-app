@@ -80,7 +80,9 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                           setShowSuggestions(true);
                         }}
                         onBlur={() => {
-                          setShowSuggestions(false);
+                          setTimeout(() => {
+                            setShowSuggestions(false);
+                          }, 200);
                         }}
                       />
                     </FormControl>
