@@ -3,7 +3,6 @@ import * as taskModel from "../models/taskModel.js";
 
 // Create a new task
 export const addTask = async (req: Request, res: Response) => {
-  console.log(req.body);
   try {
     const taskData = req.body;
     const newTask = await taskModel.createTask(taskData);

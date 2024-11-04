@@ -14,24 +14,24 @@ A simple Interactive To-Do List Application where users can add, remove, and mar
 
 ## Technology Stack
 
-- **Frontend**: React, TypeScript
+- **Frontend**: React, Next.js, TypeScript
 - **Backend**: Node.js, Express, MongoDB (via Prisma)
-- **AI Integration**: OpenAI API
-- **Testing**: Jest, Supertest
+- **AI Integration**: Groq API
+- **Testing**: Jest
 - **Containerization**: Docker, Docker Compose
 
 ## Prerequisites
 
 - **Docker** and **Docker Compose** installed on your machine
-- OpenAI API Key for AI task suggestions
+- Groq API key for AI task suggestions
 
 ## Setup Instructions
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd interactive-todo-list
+git clone git@github.com:rcleend/ai-todo-app.git
+cd ai-todo-app
 ```
 
 ### 2. Environment Setup
@@ -41,8 +41,13 @@ Create `.env` files in both frontend and backend directories:
 Frontend (.env):
 
 ```bash
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
 GROQ_API_KEY=your_groq_api_key
+```
+
+Backend (.env):
+
+```bash
+DATABASE_URL="mongodb://root:example@localhost:27017/todoapp?authSource=admin"
 ```
 
 ### 3. Start the Application
@@ -110,14 +115,6 @@ pnpm test
 - `POST /api/tasks` - Create a new task
 - `PUT /api/tasks/:id` - Update a task
 - `DELETE /api/tasks/:id` - Delete a task
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
