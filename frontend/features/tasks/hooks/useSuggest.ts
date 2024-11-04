@@ -8,7 +8,6 @@ import { useDebounce } from "@/hooks/useDebounce";
 export function useSuggest(tasks: Task[]) {
   const [suggestions, setSuggestions] = useState<Task[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
   const { toast } = useToast();
 
   const suggestMutation = useMutation({
@@ -30,37 +29,19 @@ export function useSuggest(tasks: Task[]) {
     },
   });
 
-  const getSuggestions = useCallback(
-    (value: string) => {
-      if (value.length >= 3) {
-        const tasksForSuggestions = [...tasks.slice(0, 10)];
-        suggestMutation.mutate(tasksForSuggestions as Task[]);
-      }
-    },
-    [tasks, suggestMutation]
-  );
+  const getSuggestions = useCallback(() => {
+    const tasksForSuggestions = [...tasks.slice(0, 10)];
+    suggestMutation.mutate(tasksForSuggestions as Task[]);
+  }, [tasks, suggestMutation]);
 
   const handleTitleChange = useDebounce(getSuggestions, 500);
 
-  const handleCloseSuggestions = useCallback(() => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setShowSuggestions(false);
-      setIsClosing(false);
-    }, 200);
-  }, []);
-
-  const handleShowSuggestions = useCallback(() => {
-    setShowSuggestions(true);
-  }, []);
-
   return {
     suggestions,
+    setSuggestions,
     showSuggestions,
-    isClosing,
     handleTitleChange,
-    handleCloseSuggestions,
-    handleShowSuggestions,
+    setShowSuggestions,
     isLoading: suggestMutation.isLoading,
   };
 }

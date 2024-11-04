@@ -33,18 +33,17 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
 
   const {
     suggestions,
+    setSuggestions,
     showSuggestions,
-    isClosing,
     handleTitleChange,
-    handleCloseSuggestions,
-    handleShowSuggestions,
+    setShowSuggestions,
     isLoading,
   } = useSuggest(tasks);
 
   const handleSelectSuggestion = (suggestion: Task) => {
     form.setValue("title", suggestion.title);
     form.setValue("description", suggestion.description || "");
-    handleCloseSuggestions();
+    setShowSuggestions(false);
   };
 
   const handleSubmit = (values: TaskFormValues) => {
@@ -74,10 +73,12 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                         {...field}
                         onChange={(e) => {
                           field.onChange(e);
-                          handleTitleChange(e.target.value);
-                          handleShowSuggestions();
+                          handleTitleChange();
                         }}
-                        onFocus={handleShowSuggestions}
+                        onFocus={() => {
+                          handleTitleChange();
+                          setShowSuggestions(true);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -86,8 +87,11 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                         suggestions={suggestions}
                         isLoading={isLoading}
                         onSelectSuggestion={handleSelectSuggestion}
-                        onClose={handleCloseSuggestions}
-                        show={!isClosing}
+                        onClose={() => {
+                          setSuggestions([]);
+                          setShowSuggestions(false);
+                        }}
+                        show={showSuggestions}
                       />
                     )}
                   </FormItem>

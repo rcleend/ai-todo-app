@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { Plus } from "lucide-react";
 import { Task } from "@/lib/types";
 import { Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,18 +37,17 @@ export function TaskSuggestions({
     };
   }, [onClose]);
 
-  if (suggestions.length === 0) {
-    return null;
-  }
-
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {show && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, scale: 0.95, y: -20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -20 }}
+          transition={{
+            duration: 0.2,
+            ease: "easeOut",
+          }}
           ref={suggestionsRef}
           className="absolute z-50 w-full mt-1 pb-2 bg-popover border-2 rounded-md shadow-md [background:linear-gradient(45deg,#172033,theme(colors.slate.800)_50%,#172033)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.600/.48)_80%,_theme(colors.indigo.500)_86%,_theme(colors.indigo.300)_90%,_theme(colors.indigo.500)_94%,_theme(colors.slate.600/.48))_border-box] border-transparent animate-border"
         >
@@ -59,14 +57,14 @@ export function TaskSuggestions({
               AI Suggestions
             </span>
           </div>
-          {isLoading ? (
+          {isLoading || suggestions.length === 0 ? (
             <div className="space-y-0">
               {[1, 2, 3].map((index) => (
                 <div
                   key={index}
                   className="w-full flex items-center justify-between px-4 py-2"
                 >
-                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-5 w-full" />
                 </div>
               ))}
             </div>
