@@ -31,6 +31,7 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
     },
   });
 
+  const [showSuggestions, setShowSuggestions] = React.useState(true);
   const { suggestions, handleTitleChange, isLoading } = useSuggest(tasks);
 
   const handleSelectSuggestion = (suggestion: Task) => {
@@ -58,7 +59,7 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                 control={form.control}
                 name="title"
                 render={({ field }) => (
-                  <FormItem className="min-h-[70px]">
+                  <FormItem className="min-h-[70px] relative">
                     <FormControl>
                       <Input
                         placeholder="Task title"
@@ -66,17 +67,21 @@ export function TaskForm({ onSubmit, tasks }: TaskFormProps) {
                         onChange={(e) => {
                           field.onChange(e);
                           handleTitleChange(e.target.value);
+                          setShowSuggestions(true);
                         }}
                       />
                     </FormControl>
                     <FormMessage />
+                    {showSuggestions && (
+                      <TaskSuggestions
+                        suggestions={suggestions}
+                        isLoading={isLoading}
+                        onSelectSuggestion={handleSelectSuggestion}
+                        onClose={() => setShowSuggestions(false)}
+                      />
+                    )}
                   </FormItem>
                 )}
-              />
-              <TaskSuggestions
-                suggestions={suggestions}
-                isLoading={isLoading}
-                onSelectSuggestion={handleSelectSuggestion}
               />
               <FormField
                 control={form.control}
