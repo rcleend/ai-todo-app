@@ -1,6 +1,8 @@
 import { PrismaClient, Task } from "@prisma/client";
 import * as taskModel from "../src/models/taskModel";
 
+// TODO: setup test database
+
 describe("Task API", () => {
   let prisma: PrismaClient;
 
